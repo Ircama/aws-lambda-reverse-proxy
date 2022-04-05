@@ -71,11 +71,11 @@ Press again "API Gateway" on the top.
 
 Press "rproxy-API"
 
-You shoud just have "$default"	https://.......amazonaws.com
+You should just have `"$default"	https://.......amazonaws.com`
 
-Test the URL in another page; you should get "Hello from Lambda!"
+Test the URL in another browser tab; you should get "Hello from Lambda!"
 
-Add /test to the URL: https://.......amazonaws.com/test
+Add `/test` to the URL: https://.......amazonaws.com/test
 
 You should still get "Hello from Lambda!" (this means that the proxy gateway works with all paths).
 
@@ -85,11 +85,14 @@ Select "General configuration". Configure the memory (e.g., 512 MB) and the time
 
 Press Triggers (and do a refresh on this page....)
 
-You might have two API Gateway: rproxy-API
+You might have two API Gateway items:
+```
+rproxy-API
 API endpoint: https://....amazonaws.com/{proxy+}
-and another one with arn:aws:execute-api.../*/*/rproxy
+```
+and another one, with `arn:aws:execute-api.../*/*/rproxy`.
 
-Remove the second one (select and delete), so that only the `/{proxy+}` is configured.
+Remove the second one (select it and press Delete), so that only the `/{proxy+}` is configured.
 
 Press "Environment variables".
 
@@ -97,27 +100,29 @@ Add `REMOTE_URL` and `FILTERED_PATH` (see below).
 
 Press Code.
 
-Paste the code from this repo (replacing the default code)
+Paste the code from this repo (replacing the default code).
 
 Press "Deploy".
 
-Select "Runtime settings" and press Edit
+Select "Runtime settings" and press Edit.
 
-Change the Handler: lambda_function.proxy_handler.
+Change the Handler: `lambda_function.proxy_handler`.
 
 Press Save.
 
 Test again the page.
 
-Test https://....amazonaws.com/foobar; you should get a "Filtered URL." error (if using `FILTERED_PATH=/foobar`).
+Test `https://....amazonaws.com/foobar`; you should get a "Filtered URL." error (if using `FILTERED_PATH=/foobar`).
 
-Test https://....amazonaws.com/cookies/set/:name/:value; you should get the cookie named `:name:` set to `:value`.
+Test `https://....amazonaws.com/cookies/set/:name/:value`; you should get the cookie named `:name:` set to `:value`.
 
-Test https://....amazonaws.com/headers; you should get the list of headers of your function, as obtained by https://httpbin.org/headers; included in the headers there should be `"Cookie": ":name=:value",`
+Test `https://....amazonaws.com/headers`; you should get the list of headers of your function, as obtained by https://httpbin.org/headers; included in the headers there should be `"Cookie": ":name=:value",`
 
-Test https://....amazonaws.com/headers?trace_request=y; you should get the dump of the `event` and `context` variables of `proxy_handler()`.
+Test `https://....amazonaws.com/headers?trace_request=y`; you should get the dump of the `event` and `context` variables of `proxy_handler()`.
 
-Test https://....amazonaws.com/headers?trace_connection=y; you should read tracing information in the CloudWatch Logs (e.g., `/usr/local/bin/aws logs tail /aws/lambda/rproxy  --follow`).
+Test `https://....amazonaws.com/headers?trace_connection=y`; you should read tracing information in the CloudWatch Logs (e.g., `/usr/local/bin/aws logs tail /aws/lambda/rproxy  --follow`).
+
+Try testing [other paths](https://stackoverflow.com/a/9770981/10598800).
 
 In case of error, run `/usr/local/bin/aws logs tail /aws/lambda/rproxy  --follow` and see the logs.
 
@@ -127,7 +132,6 @@ Installation of awscli on Unix (or WSL) to trace the AWS Lambda function:
 
 ```bash
 # Install awscli:
-
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
@@ -139,19 +143,19 @@ sudo ./aws/install
 
 ## Tracing
 
-(After installing awscli:)
+(After installing `awscli`)
 
 ```bash
 /usr/local/bin/aws logs tail /aws/lambda/<function name> --follow
 ```
 
-## Needed variables
+## Needed environment variables
 
-`REMOTE_URL`: http or https remote URL (example: https://httpbin.org)
+`REMOTE_URL`: remote URL (http or https). Example: https://httpbin.org
 
-`FILTERED_PATH`: path that needs to be filtered (example: /foobar)
+`FILTERED_PATH`: path that needs to be filtered. Example: `/foobar`.
 
 ## Special parameters
 
-`&trace_connection=y`: trace log data via `aws logs tail /aws/lambda/<function name> --follow`
-`&trace_request=y`: dump the request
+- `&trace_connection=y`: trace log data via `aws logs tail /aws/lambda/<function name> --follow`
+- `&trace_request=y`: dump the request
