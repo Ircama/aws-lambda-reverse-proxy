@@ -1,7 +1,26 @@
 # aws-lambda-reverse-proxy
 A simple Python Reverse Proxy using AWS Lambda
 
-# AWS Lambda setup
+## Description
+
+This program and related setup allows to implement a simple http based request/response [reverse proxy application](https://en.wikipedia.org/wiki/Reverse_proxy) exposing to internet a default AWS auto-generated public fully functional https endpoint that automatically uses the Amazon API Gateway certificate (or allowing a custom one). This proxy application is able to inspect the received https request from the client (web browser) and to forward it to an http or https internet backend; in turn, when receiving the response from the backend, it is delivered to the client on the internet (e.g., web browser), which is unaware of the backend service and related protocol, regardless it is HTTP or https with [self-signed SSL Certificate](https://en.wikipedia.org/wiki/Self-signed_certificate). The default http API endpoint looks like https://{restapi_id}.execute-api.{region}.amazonaws.com, including a valid AWS certificate.
+
+Features:
+- configurable remote URL
+- request/response mode
+- all http methods are supported (e.g., GET, POST)
+- mask a "Not Secure" HTTPS backend (e.g., a computing resource) that uses a self-signed SSL Certificate
+- forward and integrate http headers and cookies
+- configurable filtered path with customizable warning page
+- allow special `&trace_connection=y` and `&trace_request=y` debug queries
+- allow up to 6 MB payload (e.g., small web pages and small-sized resources like icons, images, documents, etc.)
+- tested to integrate an always-free Oracle Cloud OCI computing resource
+
+## Setup the needed AWS resources
+
+### Create a Python-based AWS Lambda function
+
+[AWS Lambda](https://aws.amazon.com/lambda/?nc2=h_ql_prod_fs_lbd) is a [serverless computing service](https://aws.amazon.com/getting-started/hands-on/run-serverless-code/?nc1=h_ls) included in the [free tier](https://aws.amazon.com/lambda/pricing/?loc=ft#Free_Tier) of Amazon Web Services (AWS), including one million free requests per month and 400000 GB-seconds of compute time per month.
 
 AWS > Lambda > Functions > Create function
 - select "Author from scratch"
@@ -13,6 +32,10 @@ AWS > Lambda > Functions > Create function
 Press Create Function
 
 Press Add trigger
+
+### Link an HTTP API Gateway to trigger the AWS Lambda function
+
+[Amazon HTTP API Gateway](https://aws.amazon.com/api-gateway/?nc1=h_ls) provides a public HTTPS endpoint to the AWS Lambda function and automatically assigns a domain to the API, with a FQDN that uses a valid Amazon API Gateway certificate. It does not generate costs in case of limited number of small-sized requests per month (e.g., 4000 requests per month, with 512 KB each).
 
 Select Api Gateway
 
@@ -79,6 +102,8 @@ Add `/test` to the URL: https://.......amazonaws.com/test
 
 You should still get "Hello from Lambda!" (this means that the proxy gateway works with all paths).
 
+### Configure the created AWS Lambda function
+
 Go back to AWS > Lambda > Functions >rproxy
 
 Select "General configuration". Configure the memory (e.g., 512 MB) and the timeout (e.g., 30 secs). Press Save.
@@ -93,6 +118,8 @@ API endpoint: https://....amazonaws.com/{proxy+}
 and another one, with `arn:aws:execute-api.../*/*/rproxy`.
 
 Remove the second one (select it and press Delete), so that only the `/{proxy+}` is configured.
+
+### Replace the default Python code with the reverse proxy
 
 Press "Environment variables".
 
@@ -109,6 +136,8 @@ Select "Runtime settings" and press Edit.
 Change the Handler: `lambda_function.proxy_handler`.
 
 Press Save.
+
+### Test the configuration
 
 Test again the page.
 
