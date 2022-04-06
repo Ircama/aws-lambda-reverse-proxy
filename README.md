@@ -3,18 +3,18 @@ A simple Python Reverse Proxy using AWS Lambda
 
 ## Description
 
-This program and related setup allows to implement a simple http based request/response [reverse proxy application](https://en.wikipedia.org/wiki/Reverse_proxy) exposing to internet a default AWS auto-generated public fully functional https endpoint that automatically uses the Amazon API Gateway certificate (or allowing a custom one). This proxy application is able to inspect the received https request from the client (web browser) and to forward it to an http or https internet backend; in turn, when receiving the response from the backend, it is delivered to the client on the internet (e.g., web browser), which is unaware of the backend service and related protocol, regardless it is HTTP or https with [self-signed SSL Certificate](https://en.wikipedia.org/wiki/Self-signed_certificate). The default http API endpoint looks like https://{restapi_id}.execute-api.{region}.amazonaws.com, including a valid AWS certificate.
+This program and related setup allows to implement a simple http based request/response [reverse proxy application](https://en.wikipedia.org/wiki/Reverse_proxy) exposing to internet a default AWS auto-generated public fully functional https endpoint that automatically uses the Amazon API Gateway certificate (or allowing a custom one). This proxy application is able to inspect the received https request from the client (web browser) and to forward it to an http or https internet backend; in turn, when receiving the response from the backend, it is delivered to the client on the internet (e.g., web browser), which is unaware of the backend service and related protocol, regardless it is HTTP or https with [self-signed SSL certificate](https://en.wikipedia.org/wiki/Self-signed_certificate). The default http API endpoint looks like `https://{restapi_id}.execute-api.{region}.amazonaws.com`, including a valid AWS certificate.
 
 Features:
 - configurable remote URL
 - request/response mode
-- all http methods are supported (e.g., GET, POST)
-- mask a "Not Secure" HTTPS backend (e.g., a computing resource) that uses a self-signed SSL Certificate
+- standard http methods supported (e.g., GET, POST)
+- mask a "not secure" HTTPS backend (e.g., a computing resource) that uses a self-signed SSL certificate
 - forward and integrate http headers and cookies
-- configurable filtered path with customizable warning page
+- configurable filtered path with simple warning page
 - allow special `&trace_connection=y` and `&trace_request=y` debug queries
 - allow up to 6 MB payload (e.g., small web pages and small-sized resources like icons, images, documents, etc.)
-- tested to integrate an always-free Oracle Cloud OCI computing resource
+- tested to integrate an always-free Oracle Cloud OCI computing resource.
 
 ## Setup the needed AWS resources
 
