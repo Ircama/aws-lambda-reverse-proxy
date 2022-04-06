@@ -14,7 +14,38 @@ Features:
 - configurable filtered path with simple warning page
 - allow special `&trace_connection=y` and `&trace_request=y` debug queries
 - allow up to 6 MB payload (e.g., small web pages and small-sized resources like icons, images, documents, etc.)
-- tested to integrate an always-free Oracle Cloud OCI computing resource.
+
+### Tested architecture
+
+Tested to integrate an always-free Oracle Cloud OCI computing resource.
+
+```
+Web browser
+
+   ^
+   |
+   V
+
+Internet
+
+   ^
+   |
+   V
+
+AWS Reverse Proxy, exposing a fixed FQDN with valid SSL certificate over HTTPS (provided by the Amazon Root CA), port 443
+
+   ^
+   |
+   V
+
+Internet
+
+   ^
+   |
+   V
+
+Oracle Cloud Compute instance, exposing a public IP address on a different port, with self-signed certificate and no FQDN
+```
 
 ## Setup the needed AWS resources
 
