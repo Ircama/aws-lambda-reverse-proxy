@@ -89,8 +89,10 @@ def proxy_handler(event, context):
         print("cookies =", cookies)
         print("body =", body)
 
+    retries = urllib3.util.Retry(connect=0, read=0, redirect=0)
+    http = urllib3.PoolManager(
+        cert_reqs='CERT_NONE', timeout=11.0, retries=retries)
     try:
-        http = urllib3.PoolManager(cert_reqs='CERT_NONE', timeout=120.0)
         resp = http.request(method=http_method, url=url, headers=headers,
                             body=body, redirect=False)
         resp_cookies = resp.headers.getlist('Set-Cookie')
@@ -118,6 +120,18 @@ def proxy_handler(event, context):
             "body": base64.b64encode(resp.data),
             "headers": { i:resp.headers[i] for i in resp.headers }
         }
+    except urllib3.exceptions.MaxRetryError:
+        if trace_connection:
+            print('Remote server down.')
+        response = {
+            "statusCode": 500,
+            "body": GenerateErrorPage(url,
+                    GENERAL_ERROR,
+                    'Remote server down.'),
+            "headers": {
+                'Content-Type': 'text/html',
+            }
+        }
     except urllib3.exceptions.NewConnectionError:
         if trace_connection:
             print('Connection failed.')
@@ -126,6 +140,18 @@ def proxy_handler(event, context):
             "body": GenerateErrorPage(url,
                     GENERAL_ERROR,
                     'Connection failed'),
+            "headers": {
+                'Content-Type': 'text/html',
+            }
+        }
+    except Exception as e:
+        if trace_connection:
+            print('Connection error:', repr(e))
+        response = {
+            "statusCode": 500,
+            "body": GenerateErrorPage(url,
+                    GENERAL_ERROR,
+                    'Connection error: ' + repr(e)),
             "headers": {
                 'Content-Type': 'text/html',
             }

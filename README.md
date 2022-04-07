@@ -9,6 +9,7 @@ Features:
 - configurable remote URL
 - request/response mode
 - standard http methods supported (e.g., GET, POST)
+- management of general connection and timeout errors
 - mask a "not secure" HTTPS backend (e.g., a computing resource) that uses a self-signed SSL certificate
 - forward and integrate http headers and cookies
 - configurable filtered path with simple warning page
