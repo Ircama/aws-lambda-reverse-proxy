@@ -178,7 +178,7 @@ In case of error, run `/usr/local/bin/aws logs tail /aws/lambda/rproxy  --follow
 
 ## Installation of awscli
 
-Installation of awscli on Unix (or WSL) to trace the AWS Lambda function:
+Installation of awscli on Unix (or [WSL](https://docs.microsoft.com/windows/wsl/about)) to trace the AWS Lambda function:
 
 ```bash
 # Install awscli:
