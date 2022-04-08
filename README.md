@@ -43,16 +43,16 @@ Browser <==>|internet| Rproxy <==>|internet| OCI
 
 [AWS Lambda](https://aws.amazon.com/lambda/?nc2=h_ql_prod_fs_lbd) is a [serverless computing service](https://aws.amazon.com/getting-started/hands-on/run-serverless-code/?nc1=h_ls) included in the [free tier](https://aws.amazon.com/lambda/pricing/?loc=ft#Free_Tier) of Amazon Web Services (AWS), including one million free requests per month and 400000 GB-seconds of compute time per month.
 
-AWS > Lambda > Functions > Create function
-- select "Author from scratch"
-- Function name: rproxy
-- Runtime: Python 3.9
-- Architecture: x86_64
-- Permissions: Create a new role with basic Lambda permissions
+- AWS > Lambda > Functions > Create function
+  - select "Author from scratch"
+  - Function name: rproxy
+  - Runtime: Python 3.9
+  - Architecture: x86_64
+  - Permissions: Create a new role with basic Lambda permissions
 
-Press Create Function
+- Press Create Function
 
-Press Add trigger
+- Press Add trigger
 
 ### Link an HTTP API Gateway to trigger the AWS Lambda function
 
