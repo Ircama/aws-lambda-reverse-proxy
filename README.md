@@ -15,37 +15,26 @@ Features:
 - configurable filtered path with simple warning page
 - allow special `&trace_connection=y` and `&trace_request=y` debug queries
 - allow up to 6 MB payload (e.g., small web pages and small-sized resources like icons, images, documents, etc.)
+- AWS HTTP API Gateway exposes a public [FQDN](https://en.wikipedia.org/wiki/Fully_qualified_domain_name) with valid SSL certificate provided by the Amazon Root CA
 
 ### Tested architecture
 
 Tested to integrate an always-free Oracle Cloud OCI computing resource.
 
-```
-Web browser
+```mermaid
+flowchart TD;
 
-   ^
-   |
-   V
+Browser(Web browser)
 
-Internet
+Rproxy["AWS Reverse Proxy, exposing a fixed FQDN
+over HTTPS with valid SSL certificate
+provided by the Amazon Root CA, port 443"]
 
-   ^
-   |
-   V
+OCI["Oracle Cloud Compute instance, exposing
+a public IP address on a different port,
+with self-signed certificate and no FQDN"]
 
-AWS Reverse Proxy, exposing a fixed FQDN with valid SSL certificate over HTTPS (provided by the Amazon Root CA), port 443
-
-   ^
-   |
-   V
-
-Internet
-
-   ^
-   |
-   V
-
-Oracle Cloud Compute instance, exposing a public IP address on a different port, with self-signed certificate and no FQDN
+Browser <==>|internet| Rproxy <==>|internet| OCI
 ```
 
 ## Setup the needed AWS resources
