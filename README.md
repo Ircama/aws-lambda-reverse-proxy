@@ -3,19 +3,23 @@ A simple Python Reverse Proxy using AWS Lambda
 
 ## Description
 
-This program and related setup allows to implement a simple http based request/response [reverse proxy application](https://en.wikipedia.org/wiki/Reverse_proxy) exposing to internet a default AWS auto-generated public fully functional https endpoint that automatically uses the Amazon API Gateway certificate (or allowing a custom one). This proxy application is able to inspect the received https request from the client (web browser) and to forward it to an http or https internet backend; in turn, when receiving the response from the backend, it is delivered to the client on the internet (e.g., web browser), which is unaware of the backend service and related protocol, regardless it is HTTP or https with [self-signed SSL certificate](https://en.wikipedia.org/wiki/Self-signed_certificate). The default http API endpoint looks like `https://{restapi_id}.execute-api.{region}.amazonaws.com`, including a valid AWS certificate.
+This program and related setup implements a simple http based request/response [reverse proxy application](https://en.wikipedia.org/wiki/Reverse_proxy) exposing to internet a default AWS auto-generated public fully functional https [endpoint](https://docs.aws.amazon.com/general/latest/gr/apigateway.html) that automatically uses the Amazon API Gateway certificate (or a custom one).
+
+This reverse proxy application is able to inspect the received https request from the client (web browser) and to forward it to an http or https internet backend; in turn, when receiving the response from the backend, it is delivered to the client on the internet (e.g., web browser), which is unaware of the backend service IP address and related protocol, that can be HTTP or https with [self-signed SSL certificate](https://en.wikipedia.org/wiki/Self-signed_certificate), using the same port or a different one.
+
+The default http API endpoint looks like `https://{restapi_id}.execute-api.{region}.amazonaws.com`, including a valid AWS certificate.
 
 Features:
 - configurable remote URL
-- request/response mode
+- [request/response](https://en.wikipedia.org/wiki/Request%E2%80%93response) mode
 - standard http methods supported (e.g., GET, POST)
 - management of general connection and timeout errors
 - mask a "not secure" HTTPS backend (e.g., a computing resource) that uses a self-signed SSL certificate
 - forward and integrate http headers and cookies
 - configurable filtered path with simple warning page
-- allow special `&trace_connection=y` and `&trace_request=y` debug queries
-- allow up to 6 MB payload (e.g., small web pages and small-sized resources like icons, images, documents, etc.)
-- AWS HTTP API Gateway exposes a public [FQDN](https://en.wikipedia.org/wiki/Fully_qualified_domain_name) with valid SSL certificate provided by the Amazon Root CA
+- allow special `&trace_connection=y` and `&dump_request=y` debug queries (see below)
+- allow up to 6 MB payload, with reference to the AWS quota (e.g., usable for small web pages and small-sized resources like icons, images, documents, etc.)
+- expose a public [FQDN](https://en.wikipedia.org/wiki/Fully_qualified_domain_name) with valid SSL certificate provided by the Amazon Root CA
 
 ### Tested architecture
 
@@ -168,7 +172,7 @@ Browser <==>|internet| Rproxy <==>|internet| OCI
 
 - Test `https://....amazonaws.com/headers`; you should get the list of headers of your function, as obtained by https://httpbin.org/headers; included in the headers there should be `"Cookie": ":name=:value",`
 
-- Test `https://....amazonaws.com/headers?trace_request=y`; you should get the dump of the `event` and `context` variables of `proxy_handler()`.
+- Test `https://....amazonaws.com/headers?dump_request=y`; you should get the dump of the `event` and `context` variables of `proxy_handler()`.
 
 - Test `https://....amazonaws.com/headers?trace_connection=y`; you should read tracing information in the CloudWatch Logs (e.g., `/usr/local/bin/aws logs tail /aws/lambda/rproxy  --follow`).
 
@@ -207,5 +211,5 @@ sudo ./aws/install
 
 ## Special parameters
 
-- `&trace_connection=y`: trace log data via `aws logs tail /aws/lambda/<function name> --follow`
-- `&trace_request=y`: dump the request
+- `&trace_connection=y`: trace information to [CloudWatch log](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html); logs can be inspected via [`aws logs tail /aws/lambda/<function name> --follow`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/logs/tail.html)
+- `&dump_request=y`: dump the request, producing a page that describes the http request attributes (cookies, headers, path, query string, parameters, AWS context, etc.).

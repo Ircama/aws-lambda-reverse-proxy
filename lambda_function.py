@@ -57,11 +57,11 @@ def proxy_handler(event, context):
     if (event.get('queryStringParameters') and
             event['queryStringParameters'].get("trace_connection")):
         trace_connection = True
-    # &trace_request=y to dump the request
-    trace_request = False
+    # &dump_request=y to dump the request
+    dump_request = False
     if (event.get('queryStringParameters') and
-            event['queryStringParameters'].get("trace_request")):
-        trace_request = True
+            event['queryStringParameters'].get("dump_request")):
+        dump_request = True
 
     cookies = []
     if event.get('cookies'):
@@ -105,10 +105,11 @@ def proxy_handler(event, context):
         # https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
         if len(resp.data) > PAYLOAD_QUOTA:
             return {
-                "statusCode": 500,
+                "statusCode": 413,
                 "body": GenerateErrorPage(url,
-                        GENERAL_ERROR,
-                        'Too much data to transmit over AWS Lambda'),
+                        GENERAL_ERROR + ' (Payload Too Large)',
+                        'Too much data to return'
+                        ' from the remote web site over AWS Lambda'),
                 "headers": {
                     'Content-Type': 'text/html',
                 }
@@ -159,7 +160,7 @@ def proxy_handler(event, context):
 
     #print("response=", json.dumps(response, indent=4))
 
-    if not trace_request:
+    if not dump_request:
         return response
 
     return {
