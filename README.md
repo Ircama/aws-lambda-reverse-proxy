@@ -148,7 +148,7 @@ Browser <==>|internet| Rproxy <==>|internet| OCI
 
 - Press "Environment variables".
 
-- Add `REMOTE_URL` and `FILTERED_PATH` (see below).
+- Add `REMOTE_URL` and `FILTERED_PATH` (see below). For testing, use `REMOTE_URL=https://httpbin.org` and `FILTERED_PATH=/foobar|/baz`
 
 - Press Code.
 
@@ -167,6 +167,8 @@ Browser <==>|internet| Rproxy <==>|internet| OCI
 - Test again the page: `https://....amazonaws.com`. You should get the https://httpbin.org home page.
 
 - Test `https://....amazonaws.com/foobar`; you should get a "Filtered URL." error (if using `FILTERED_PATH=/foobar`).
+
+- Test `https://....amazonaws.com/baz`; you should get a "Filtered URL." error (if using `FILTERED_PATH=/foobar|/baz`).
 
 - Test `https://....amazonaws.com/cookies/set/:name/:value`; you should get the cookie named `:name:` set to `:value`.
 
@@ -205,9 +207,9 @@ sudo ./aws/install
 
 ## Needed environment variables
 
-`REMOTE_URL`: remote URL (http or https). Example: https://httpbin.org
+`REMOTE_URL`: remote URL of the backend application (http or https). Example: https://httpbin.org
 
-`FILTERED_PATH`: path that needs to be filtered. Example: `/foobar`.
+`FILTERED_PATH`: path that needs to be filtered. A list of paths can be used, by separating each path with a pipe character (`|`). Example: `/foobar|/baz`.
 
 ## Special parameters
 

@@ -41,7 +41,7 @@ def proxy_handler(event, context):
 
     if (os.environ.get('FILTERED_PATH') is not None and
             "rawPath" in event and
-            event["rawPath"] == os.environ['FILTERED_PATH']):
+            event["rawPath"] in os.environ['FILTERED_PATH'].split("|")):
         return {
             "statusCode": 500,
             "body": GenerateErrorPage(url,
