@@ -166,7 +166,27 @@ def proxy_handler(event, context):
     return {
         'statusCode': 200,
         'body': (
-            "<!DOCTYPE html><html><body><hr /><div><pre>" +
+            ""
+            """<!DOCTYPE html><html><head><title>Request dump</title></head>
+<style>
+pre {
+    border: 2px solid grey;
+    border-left: 6px solid #8f9090;
+    border-radius: 8px;
+    padding-left: 14px;
+    padding-bottom: 14px;
+    padding-right: 14px;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin: auto;
+    line-height: 15px;
+    background-image: linear-gradient(180deg, #f5f5f5 50%, #fff 50%);
+    background-size: 100% 30px;
+    background-position: 0 14px;
+    box-shadow: 5px 5px 10px rgb(0 0 0 / 30%);
+    -webkit-box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+}
+</style><body><hr /><div><pre>""" +
             #json.dumps(event, indent=4) + "\n<hr />" +
             pprint.pformat(event, indent=4) + "\n<hr />" +
             "Lambda function name: " +
