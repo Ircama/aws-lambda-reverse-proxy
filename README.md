@@ -12,14 +12,14 @@ The default http API endpoint looks like `https://{restapi_id}.execute-api.{regi
 Features:
 - configurable remote URL
 - [request/response](https://en.wikipedia.org/wiki/Request%E2%80%93response) mode
-- standard http methods supported (e.g., GET, POST)
-- management of general connection and timeout errors
-- mask a "not secure" HTTPS backend (e.g., a computing resource) that uses a self-signed SSL certificate
-- forward and integrate http headers and cookies
-- configurable filtered path with simple warning page
-- allow special `&trace_connection=y` and `&dump_request=y` debug queries (see below)
-- allow up to 6 MB payload, with reference to the AWS quota (e.g., usable for small web pages and small-sized resources like icons, images, documents, etc.)
-- expose a public [FQDN](https://en.wikipedia.org/wiki/Fully_qualified_domain_name) with valid SSL certificate provided by the Amazon Root CA
+- all standard http methods are supported (e.g., GET, POST, ..)
+- management of general connection and timeout errors of the backend site, including a splash page in case the remote backend is down
+- exposing a public [FQDN](https://en.wikipedia.org/wiki/Fully_qualified_domain_name) with valid SSL certificate provided by the Amazon Root CA
+- providing HTTS end-point with public FQDN to a non-secure HTTP backend (e.g., a computing resource), or to an HTTPS backend that uses a non-trusted self-signed SSL certificate
+- forwarding and integrating http headers and cookies between browser and backend
+- configurable filtered path (or paths) with simple warning page
+- allowing special `&trace_connection=y` and `&dump_request=y` debug queries (see below)
+- allowing up to 6 MB payload, with reference to the AWS quota (e.g., usable for small web pages and small-sized resources like icons, images, documents, etc.)
 
 ### Tested architecture
 
