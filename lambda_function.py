@@ -15,9 +15,9 @@ import urllib3
 # Disable the "Not Secure" warning when using HTTPS:
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-GENERAL_ERROR = "AWS Lambda Error"
+GENERAL_ERROR = os.environ.get('GENERAL_ERROR') or "AWS Lambda Error"
 
-PAYLOAD_QUOTA = 5000000
+PAYLOAD_QUOTA = int(os.environ.get('PAYLOAD_QUOTA') or 5000000)
 # https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
 
 def proxy_handler(event, context):
@@ -46,7 +46,7 @@ def proxy_handler(event, context):
             "statusCode": 500,
             "body": GenerateErrorPage(url,
                     GENERAL_ERROR,
-                    'Filtered URL.'),
+                    os.environ.get('FILTERED_URL_MSG') or 'Filtered URL.'),
             "headers": {
                 'Content-Type': 'text/html',
             }
@@ -91,7 +91,9 @@ def proxy_handler(event, context):
 
     retries = urllib3.util.Retry(connect=0, read=0, redirect=0)
     http = urllib3.PoolManager(
-        cert_reqs='CERT_NONE', timeout=11.0, retries=retries)
+        cert_reqs='CERT_NONE',
+        timeout=float(os.environ.get('REQUEST_TIMEOUT') or 11.0),
+        retries=retries)
     try:
         resp = http.request(method=http_method, url=url, headers=headers,
                             body=body, redirect=False)
@@ -222,11 +224,14 @@ def GenerateErrorPage(url, error, description):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <title>General Error Message</title>
+    <title>""" + (
+        os.environ.get('GENERAL_ERROR') or "AWS Lambda Error"
+        ) + """</title>
     </head>
     <body>
         <div class="jumbotron">
-            <h1 class="display-4">Sample Application</h1>
+            <h1 class="display-4">""" + (
+            os.environ.get('APP_NAME') or "Sample Application") + """</h1>
             <p class="lead"><h4><pre><b>""" + error  + """</b></pre></p></h4>
         </div>
         <div class="container-fluid">
