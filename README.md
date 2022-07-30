@@ -3,7 +3,7 @@ A simple Python Reverse Proxy using AWS Lambda
 
 ## Description
 
-This program and related setup implements a simple http based request/response [reverse proxy application](https://en.wikipedia.org/wiki/Reverse_proxy) exposing to internet a default AWS auto-generated public fully functional https [endpoint](https://docs.aws.amazon.com/general/latest/gr/apigateway.html) that automatically uses the [lambda Function URL](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html) or the [Amazon API Gateway](https://aws.amazon.com/api-gateway/) certificate (or a custom one).
+This program and related setup implements a simple http based request/response [reverse proxy application](https://en.wikipedia.org/wiki/Reverse_proxy) exposing to internet a default AWS auto-generated public fully functional https [endpoint](https://docs.aws.amazon.com/general/latest/gr/apigateway.html) that automatically uses the [lambda Function URL](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html) certificate or the [Amazon API Gateway](https://aws.amazon.com/api-gateway/) certificate (or a custom one).
 
 This reverse proxy application is able to inspect the received https request from the client (web browser) and to forward it to an http or https internet backend; in turn, when receiving the response from the backend, it is delivered to the client on the internet (e.g., web browser), which is unaware of the backend service IP address and related protocol, that can be HTTP or https with [self-signed SSL certificate](https://en.wikipedia.org/wiki/Self-signed_certificate), using the same port or a different one.
 
@@ -139,32 +139,32 @@ As alternative option to the usage of a "Function URL", an "HTTP API Gateway" ca
 
 - Press "rproxy-API"
 
-- You should just have `"$default"	https://....`
+- You should just have `"$default"	https://....execute-api....amazonaws.com/`
 
 - Test the URL in another browser tab; you should get "Hello from Lambda!"
 
-- Add `/test` to the URL: https://.../test
+- Add `/test` to the URL: https://....execute-api....amazonaws.com/test
 
 - You should still get "Hello from Lambda!" (this means that the proxy gateway works with all paths).
 
-### Configure the created AWS Lambda function
-
 - Go back to AWS > Lambda > Functions >rproxy
 
-- Select "General configuration". Configure the memory (e.g., 512 MB) and the timeout (e.g., 40 secs). Press Save.
-
-- Press Triggers (and do a refresh on this page....)
+- Press Triggers (and do a refresh on this page)
 
 - You might have two API Gateway items:
   ```
   rproxy-API
-  API endpoint: https://.../{proxy+}
+  API endpoint: https://https://....execute-api....amazonaws.com/{proxy+}
   ```
   and another one, with `arn:aws:execute-api.../*/*/rproxy`.
 
 - Remove the second one (select it and press Delete), so that only the `/{proxy+}` is configured.
 
 ### Replace the default Python code with the reverse proxy
+
+- Go back to AWS > Lambda > Functions >rproxy
+
+- Select "General configuration". Configure the memory (e.g., 512 MB) and the timeout (e.g., 40 secs). Press Save.
 
 - Press "Environment variables".
 
@@ -200,7 +200,7 @@ As alternative option to the usage of a "Function URL", an "HTTP API Gateway" ca
 
 - Try testing [other paths](https://stackoverflow.com/a/9770981/10598800).
 
-In case of error, run `/usr/local/bin/aws logs tail /aws/lambda/rproxy  --follow` and see the logs.
+In case of error, run `/usr/local/bin/aws logs tail /aws/lambda/rproxy --follow` and see the logs.
 
 ## Installation of awscli
 
@@ -234,8 +234,8 @@ sudo ./aws/install
 Optional parameters:
 
 - `GENERAL_ERROR`: title of the error message; default is "AWS Lambda Error"
-- `PAYLOAD_QUOTA`: max payload size; default is 5000000 bytes
-- `REQUEST_TIMEOUT`: request timeout to the backend portal; default is 11.0 seconds
+- `PAYLOAD_QUOTA`: max payload size; default is 5000000 bytes (size of the answer from the backend portal)
+- `REQUEST_TIMEOUT`: timeout to wait for the answer from the backend portal; default is 11.0 seconds
 - `APP_NAME`: application name; default is "Sample Application"
 - `FILTERED_URL_MSG`: filtered URL message; default is "Filtered URL."
 
