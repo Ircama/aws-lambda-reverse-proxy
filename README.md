@@ -3,7 +3,7 @@ A simple Python Reverse Proxy using AWS Lambda
 
 ## Description
 
-This program and related setup implements a simple http based request/response [reverse proxy application](https://en.wikipedia.org/wiki/Reverse_proxy) exposing to internet a default AWS auto-generated public fully functional https [endpoint](https://docs.aws.amazon.com/general/latest/gr/apigateway.html) that automatically uses the Amazon API Gateway certificate (or a custom one).
+This program and related setup implements a simple http based request/response [reverse proxy application](https://en.wikipedia.org/wiki/Reverse_proxy) exposing to internet a default AWS auto-generated public fully functional https [endpoint](https://docs.aws.amazon.com/general/latest/gr/apigateway.html) that automatically uses the [lambda Function URL](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html) or the [Amazon API Gateway](https://aws.amazon.com/api-gateway/) certificate (or a custom one).
 
 This reverse proxy application is able to inspect the received https request from the client (web browser) and to forward it to an http or https internet backend; in turn, when receiving the response from the backend, it is delivered to the client on the internet (e.g., web browser), which is unaware of the backend service IP address and related protocol, that can be HTTP or https with [self-signed SSL certificate](https://en.wikipedia.org/wiki/Self-signed_certificate), using the same port or a different one.
 

@@ -63,8 +63,12 @@ def proxy_handler(event, context):
             event['queryStringParameters'].get("dump_request")):
         dump_request = True
 
-    cookies = []
-    if event.get('cookies'):
+    cookies = []  # set this only if cookies are not referred to a lambda url
+    domain = event['requestContext']['domainName'].split(".")
+    if not (len(domain) == 5 and
+            domain[1] == 'lambda-url' and
+            domain[3] == 'on' and
+            domain[4] == 'aws') and event.get('cookies'):
         cookies = event['cookies']
 
     headers = {}
@@ -80,7 +84,7 @@ def proxy_handler(event, context):
             body = base64.b64decode(body)
     
     if cookies:
-        headers['Cookie'] = '; '.join(cookies)
+        headers['Cookie'] = '; '.join(cookies)  # not set with lambda url
 
     if trace_connection:
         print("remote url =", url)
