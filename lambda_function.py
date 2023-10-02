@@ -72,7 +72,8 @@ def proxy_handler(event, context):
         cookies = event['cookies']
 
     headers = {}
-    if event.get('headers'):
+
+    if event.get('headers') and not os.environ.get('NO_HEADERS'):
         headers = event['headers']
 
     body = ''
@@ -98,9 +99,15 @@ def proxy_handler(event, context):
         cert_reqs='CERT_NONE',
         timeout=float(os.environ.get('REQUEST_TIMEOUT') or 11.0),
         retries=retries)
+
     try:
-        resp = http.request(method=http_method, url=url, headers=headers,
-                            body=body, redirect=False)
+        resp = http.request(
+            method=http_method,
+            url=url,
+            headers=headers,
+            body=body,
+            redirect=False
+        )
         resp_cookies = resp.headers.getlist('Set-Cookie')
         if trace_connection:
             print("statusCode returned from remote =", resp.status)
