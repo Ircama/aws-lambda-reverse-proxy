@@ -101,6 +101,7 @@ As alternative option to the usage of a "Function URL", an "HTTP API Gateway" ca
 - Notes on using the `ANY` `/{proxy+}` integration:
   - https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
   - https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-set-up-simple-proxy.html
+  Note: this code requires Payload format version 2.0 (interpreted response format) for integration (might not work with version 1).
 
 - Press Create
 
