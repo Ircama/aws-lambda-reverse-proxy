@@ -50,13 +50,11 @@ Browser <==>|internet| Rproxy <==>|internet| OCI
 - AWS > Lambda > Functions > Create function
   - select "Author from scratch"
   - Function name: rproxy
-  - Runtime: Python 3.9
+  - Runtime: Python 3.11
   - Architecture: x86_64
   - Permissions: Create a new role with basic Lambda permissions
 
 - Press Create Function
-
-- Press Add trigger
 
 ### Option 1 - Add a "Function URL" to the AWS Lambda function
 
@@ -81,6 +79,8 @@ The configuration of a [Function URL](https://docs.aws.amazon.com/lambda/latest/
 As alternative option to the usage of a "Function URL", an "HTTP API Gateway" can be created.
 
 [Amazon HTTP API Gateway](https://aws.amazon.com/api-gateway/?nc1=h_ls) provides a public HTTPS endpoint to the AWS Lambda function and automatically assigns a domain to the API, with a FQDN that uses a valid Amazon API Gateway certificate. It does not generate costs in case of limited number of small-sized requests per month (e.g., 4000 requests per month, with 512 KB each).
+
+- Press Add trigger
 
 - Select Api Gateway
 
