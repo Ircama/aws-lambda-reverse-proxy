@@ -58,7 +58,7 @@ Browser <==>|internet| Rproxy <==>|internet| OCI
 
 ### Option 1 - Add a "Function URL" to the AWS Lambda function
 
-The configuration of a [Function URL](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html) is the preferred method, as does not imply the introduction of the fixed "HTTP API Gateway" timeout of 30 secs.
+The configuration of a [Function URL](https://docs.aws.amazon.com/lambda/latest/dg/lambda-urls.html) is the preferred method, as does not imply the introduction of the fixed "HTTP API Gateway" timeout of 30 secs. Option 2 seems to better change long URLs. Both option can be concurrently active.
 
 - AWS > Lambda > Functions > rproxy
   - select "Configuration"
@@ -134,6 +134,7 @@ As alternative option to the usage of a "Function URL", an "HTTP API Gateway" ca
 - Select "default" (not $default)
 
 - Check that "default" is selected (not $default) and press "Delete". Confirm.
+  Note: if $default is missing, select "Stages" and add one named "$default", selecting "Enable automatic deployment". When done, you can remove the "default" Stage.
 
 - Press again "API Gateway" on the top.
 
@@ -229,7 +230,9 @@ sudo ./aws/install
 
 `REMOTE_URL`: remote URL of the backend application (http or https). Example: https://httpbin.org
 
-`FILTERED_PATH`: path that needs to be filtered. A list of paths can be used, by separating each path with a pipe character (`|`). Example: `/foobar|/baz`.
+`FILTERED_PATH`: (optional) path that needs to be filtered. A list of paths can be used, by separating each path with a pipe character (`|`). Example: `/foobar|/baz`.
+
+`NO_HEADERS`: (optional) when existing and set, do not forward headers.
 
 Optional parameters:
 
