@@ -19,7 +19,11 @@ Features:
 - forwarding and integrating http headers and cookies between browser and backend
 - configurable filtered path (or paths) with simple warning page
 - allowing special `&trace_connection=y` and `&dump_request=y` debug queries (see below)
-- allowing up to 6 MB payload, with reference to the AWS quota (e.g., usable for small web pages and small-sized resources like icons, images, documents, etc.)
+- allowing up to 6 MB payload, with reference to the AWS Lambda quota (e.g., usable for small web pages and small-sized resources like icons, images, documents, etc.)
+
+Limitations:
+- the max response size must be within 6 MB
+- progressively streaming response payloads is not supported (only the request/response mode is allowed)
 
 ### Tested architecture
 
