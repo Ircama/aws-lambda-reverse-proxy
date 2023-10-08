@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Ircama"
-__copyright__ = "Copyright 2021-2022, Ircama"
+__copyright__ = "Copyright 2021-2023, Ircama"
 __license__ = "CC BY-NC-SA 4.0"
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __maintainer__ = "Ircama"
 
 import base64
@@ -71,10 +71,26 @@ def proxy_handler(event, context):
             domain[4] == 'aws') and event.get('cookies'):
         cookies = event['cookies']
 
-    headers = {}
-
-    if event.get('headers') and not os.environ.get('NO_HEADERS'):
-        headers = event['headers']
+    headers = event['headers']
+    if event.get('headers') and os.environ.get('NO_HEADERS'):
+        #headers.pop('accept', None)
+        headers.pop('accept-encoding', None)
+        #headers.pop('accept-language', None)
+        #headers.pop('content-length', None)
+        #headers.pop('host', None)
+        #headers.pop('sec-ch-ua', None)
+        #headers.pop('sec-ch-ua-mobile', None)
+        #headers.pop('sec-ch-ua-platform', None)
+        #headers.pop('sec-fetch-dest', None)
+        #headers.pop('sec-fetch-mode', None)
+        #headers.pop('sec-fetch-site', None)
+        #headers.pop('sec-fetch-user', None)
+        #headers.pop('upgrade-insecure-requests', None)
+        #headers.pop('user-agent', None)
+        #headers.pop('x-amzn-trace-id', None)
+        #headers.pop('x-forwarded-for', None)
+        #headers.pop('x-forwarded-port', None)
+        #headers.pop('x-forwarded-proto', None)
 
     body = ''
     if event.get('body'):
@@ -88,11 +104,11 @@ def proxy_handler(event, context):
         headers['Cookie'] = '; '.join(cookies)  # not set with lambda url
 
     if trace_connection:
-        print("remote url =", url)
-        print("local http_method =", http_method)
-        print("headers =", headers)
-        print("cookies =", cookies)
-        print("body =", body)
+        print("trace_connection - remote url =", url)
+        print("trace_connection - local http_method =", http_method)
+        print("trace_connection - headers =", headers)
+        print("trace_connection - cookies =", cookies)
+        print("trace_connection - body =", body)
 
     retries = urllib3.util.Retry(connect=0, read=0, redirect=0)
     http = urllib3.PoolManager(
@@ -110,11 +126,11 @@ def proxy_handler(event, context):
         )
         resp_cookies = resp.headers.getlist('Set-Cookie')
         if trace_connection:
-            print("statusCode returned from remote =", resp.status)
-            print("resp_cookies =", resp_cookies)
-            print("resp.headers =", resp.headers)
-            print("size of received data =", len(resp.data))
-            print("size of encoded data =", len(base64.b64encode(resp.data)))
+            print("trace_connection - statusCode returned from remote =", resp.status)
+            print("trace_connection - resp_cookies =", resp_cookies)
+            print("trace_connection - resp.headers =", resp.headers)
+            print("trace_connection - size of received data =", len(resp.data))
+            print("trace_connection - size of encoded data =", len(base64.b64encode(resp.data)))
         # https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
         if len(resp.data) > PAYLOAD_QUOTA:
             return {
@@ -127,6 +143,7 @@ def proxy_handler(event, context):
                     'Content-Type': 'text/html',
                 }
             }
+        # Here substitutions can be optionally applied to resp.data
         response = {
             "cookies": resp_cookies,
             "isBase64Encoded": True,
@@ -136,7 +153,7 @@ def proxy_handler(event, context):
         }
     except urllib3.exceptions.MaxRetryError:
         if trace_connection:
-            print('Remote server down.')
+            print('trace_connection - Remote server down.')
         response = {
             "statusCode": 500,
             "body": GenerateErrorPage(url,
@@ -148,7 +165,7 @@ def proxy_handler(event, context):
         }
     except urllib3.exceptions.NewConnectionError:
         if trace_connection:
-            print('Connection failed.')
+            print('trace_connection - Connection failed.')
         response = {
             "statusCode": 500,
             "body": GenerateErrorPage(url,
@@ -160,7 +177,7 @@ def proxy_handler(event, context):
         }
     except Exception as e:
         if trace_connection:
-            print('Connection error:', repr(e))
+            print('trace_connection - Connection error:', repr(e))
         response = {
             "statusCode": 500,
             "body": GenerateErrorPage(url,
