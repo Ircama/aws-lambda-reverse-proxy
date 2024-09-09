@@ -268,7 +268,7 @@ def GenerateErrorPage(url, error, description):
         <br />
         <br />
         <div class="container-fluid">
-        <h3><a href='""" + url + """'>Click here to access the same funtion on the target system</a></h3>
+        <h3><a href='""" + url + """'>Click here to access the same page on the target system</a></h3>
         </div>
     </body>
 </html> 
