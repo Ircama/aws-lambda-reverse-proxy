@@ -29,6 +29,7 @@ def proxy_handler(event, context):
                     'AWS Lambda function not correctly configured'),
             "headers": {
                 'Content-Type': 'text/html',
+                'X-Robots-Tag': 'noindex, nofollow',
             }
         }
     url = os.environ['REMOTE_URL']
@@ -49,6 +50,7 @@ def proxy_handler(event, context):
                     os.environ.get('FILTERED_URL_MSG') or 'Filtered URL.'),
             "headers": {
                 'Content-Type': 'text/html',
+                'X-Robots-Tag': 'noindex, nofollow',
             }
         }
 
@@ -141,6 +143,7 @@ def proxy_handler(event, context):
                         ' from the remote web site over AWS Lambda'),
                 "headers": {
                     'Content-Type': 'text/html',
+                    'X-Robots-Tag': 'noindex, nofollow',
                 }
             }
         # Here substitutions can be optionally applied to resp.data
@@ -161,6 +164,7 @@ def proxy_handler(event, context):
                     'Remote server down.'),
             "headers": {
                 'Content-Type': 'text/html',
+                'X-Robots-Tag': 'noindex, nofollow',
             }
         }
     except urllib3.exceptions.NewConnectionError:
@@ -173,6 +177,7 @@ def proxy_handler(event, context):
                     'Connection failed'),
             "headers": {
                 'Content-Type': 'text/html',
+                'X-Robots-Tag': 'noindex, nofollow',
             }
         }
     except Exception as e:
@@ -185,6 +190,7 @@ def proxy_handler(event, context):
                     'Connection error: ' + repr(e)),
             "headers": {
                 'Content-Type': 'text/html',
+                'X-Robots-Tag': 'noindex, nofollow',
             }
         }
 
@@ -240,6 +246,7 @@ pre {
             ),
         "headers": {
             'Content-Type': 'text/html',
+            'X-Robots-Tag': 'noindex, nofollow',
         }
     }
     # https://docs.aws.amazon.com/lambda/latest/dg/python-context.html
